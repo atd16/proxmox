@@ -318,7 +318,7 @@ ${NC}"
     echo -e "${INFO} Installation de la miniProbe PRTG ${NC}"
     apt install -q -y netcat python-setuptools
     cd /opt
-    git clone https://github.com/ianbogda/PythonMiniProbe.git
+    git clone https://github.com/atd16/PythonMiniProbe.git
     cd PythonMiniProbe
     ./install.sh
     echo -e "${SUCCESS} \u2714 Capteur PRTG installé ${NC}"
