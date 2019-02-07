@@ -312,6 +312,8 @@ EOF
 ips: 1
 ips_queues: 0
 ${NC}"
+    echo "nfnetlink_queue" >> /etc/modules
+    NEEDREBOOT=1
     echo -e "${SUCCESS} \u2714 Installation et configuration de suricata terminée.${NC}"
   fi
   if [[ ${choices[6]} ]]; then
