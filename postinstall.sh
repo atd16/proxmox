@@ -136,7 +136,10 @@ function ACTIONS {
     # modification du bashrc pour notification de connexion ssh avec l'history
     echo -e "echo \"Avertissement! Connexion au serveur : \" \`hostname\` \"par: \" \`who | grep -v localhost\` | mail -s \"[ \`hostname\` ] Avertissement!!! connexion au serveur le: \`date +'%Y/%m/%d'\`  \`who | grep -v localhost | awk {'print $5'}\`\" $adminmail -a \"From: `hostname`@$domainsmtp\"" >> /etc/bash.bashrc
     echo -e "PROMPT_COMMAND='history -a >(logger -t \"\$USER[\$PWD] \$SSH_CONNECTION\")'" >> /etc/bash.bashrc
-    echo -e "${SUCCESS} \u2714 Notification par mail à chaque connexion ssh ${NC}"
+    echo -e "${SUCCESS} \u2714 Notification par mail à chaque connexion ssh ${NC}"a
+
+    echo -e "alias rm='rm -i'" >> /etc/bash.bashrc
+    echo -e "${SUCCESS} \u2714 Commande rm avec confirmation ${NC}"
 
     NEEDREBOOT=1
   fi
@@ -438,7 +441,11 @@ function MENU {
 
   for NUM in ${!options[@]}; do
     if [[ "${choices[NUM]:- }" ]]; then
-      echo -e "[""${choices[NUM]:- }""]" $(( NUM+1 ))") ${options[NUM]}"
+      if [[ "${choices[NUM]}" == "+" ]]; then
+        echo -e "${SUCCESS}[""${choices[NUM]:- }""]" $(( NUM+1 ))") ${options[NUM]}${NC}"
+      else
+        echo -e "[""${choices[NUM]:- }""]" $(( NUM+1 ))") ${options[NUM]}"
+      fi
     fi
   done
   echo -e "${DANGER}$ERROR${NC}"
@@ -446,7 +453,7 @@ function MENU {
 }
 
 #Menu loop
-while MENU && read -e -p "$(echo -e $WARNING"Sélectionnez les actions à faire (1 ou plus) puis ENTREE : "$NC)" -n1 SELECTION && [[ -n "$SELECTION" ]]; do
+while MENU && read -e -p "$(echo -e $WARNING"Sélectionnez les actions à faire (1 ou plus) puis ENTREE (q ou Q pour quitter): "$NC)" -n1 SELECTION && [[ -n "$SELECTION" ]]; do
   clear
   if [[ "$SELECTION" == *[[:digit:]]* && $SELECTION -ge 1 && $SELECTION -le ${#options[@]} ]]; then
     (( SELECTION-- ))
@@ -457,6 +464,11 @@ while MENU && read -e -p "$(echo -e $WARNING"Sélectionnez les actions à faire 
     fi
       ERROR=" "
   else
+    if [[ "$SELECTION" == "q" || "$SELECTION" == "Q" ]]; then
+      echo "A bientôt"
+      ERROR=" "
+      exit 0
+    fi
     ERROR="Option invalide: $SELECTION"
   fi
 done
@@ -471,7 +483,7 @@ if [ -z "$NEEDREBOOT" ]; then
     echo "le serveur va redémarrer"
     shutdown -r now
   else
-    echo "le serveur doit être redémarré"
+    echo -e "${WARNING}le serveur doit être redémarré${NC}"
   fi
 fi
 exit 0
