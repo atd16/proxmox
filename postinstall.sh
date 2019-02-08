@@ -252,7 +252,7 @@ EOF
       read -p "Veuillez entrer votre adresse courriel pour recevoir les alertes : " adminmail
       read -p "Votre domaine d'émission smtp :" domainesmtp
     fi
-    aptinstall rkhunter
+    apt install -q -y rkhunter
     # Créer la base de données
     rkhunter --propupd
 
