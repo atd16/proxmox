@@ -158,20 +158,17 @@ function ACTIONS {
     apt install -q -y  augeas-tools
 
     augtool << EOF
-set /files/etc/ssh/sshd_config/Port 1679
+set /files/etc/ssh/sshd_config/Port 10943
 set /files/etc/ssh/sshd_config/Protocol 2
 set /files/etc/ssh/sshd_config/UsePrivilegeSeparation yes
-
 set /files/etc/ssh/sshd_config/KeyRegenerationInterval 3600
 set /files/etc/ssh/sshd_config/ServerKeyBits 1024
 set /files/etc/ssh/sshd_config/SyslogFacility AUTH
 set /files/etc/ssh/sshd_config/LogLevel INFO
-
 set /files/etc/ssh/sshd_config/LoginGraceTime 120
 set /files/etc/ssh/sshd_config/PermitRootLogin no
 set /files/etc/ssh/sshd_config/AllowUsers olmec
 set /files/etc/ssh/sshd_config/StrictMode yes
-
 set /files/etc/ssh/sshd_config/RSAAuthentication yes
 set /files/etc/ssh/sshd_config/PubkeyAuthentication yes
 set /files/etc/ssh/sshd_config/IgnoreRhosts yes
@@ -179,14 +176,11 @@ set /files/etc/ssh/sshd_config/RhostsRSAAuthentication no
 set /files/etc/ssh/sshd_config/HostbasedAuthentication no
 set /files/etc/ssh/sshd_config/ChallengeResponseAuthentication no
 set /files/etc/ssh/sshd_config/PasswordAuthentication no
-
 set /files/etc/ssh/sshd_config/PermitEmptyPasswords no
 set /files/etc/ssh/sshd_config/ChallengeResponseAuthentication no
-
 set /files/etc/ssh/sshd_config/X11DisplayOffset 10
 set /files/etc/ssh/sshd_config/PrintLastLog yes
 set /files/etc/ssh/sshd_config/TCPKeepAlive yes
-
 set /files/etc/ssh/sshd_config/UsePAM yes
 
 save
@@ -227,13 +221,13 @@ EMAIL_TO="${adminmail}";
 grep -q 'Hardening index : \\[100\\]' /var/log/lynis.log
 
 # si ce n'est pas le cas, un mail
-if [ $? != 0 ]; then
+if [ \$? != 0 ]; then
   lynis update check | mail -a "\$LOGFILE" -s 'lynis report' -a "From: \$EMAIL_FROM" "\$EMAIL_TO"
 fi
 
 # envoi mail si nouvelle version
 lynis update check > /tmp/lynis.check
-if [ $? != 0 ]; then
+if [ \$? != 0 ]; then
   lynis update info | mail -s 'lynis update available' -a "From: \$EMAIL_FROM" "\$EMAIL_TO"
 fi
 rm /tmp/lynis.check
